@@ -1,22 +1,23 @@
 import { motion } from 'motion/react';
+import { useCart } from '../context/CartContext';
 
 const menuItems = [
   {
-    id: 1,
+    id: 201,
     name: 'Chipotle Chicken',
     price: 36.00,
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et',
     image: 'https://images.unsplash.com/photo-1588168333986-5078d3ae3976?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
   },
   {
-    id: 2,
+    id: 202,
     name: 'Spicy Club',
     price: 46.00,
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et',
     image: 'https://images.unsplash.com/photo-1562967914-608f82629710?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
   },
   {
-    id: 3,
+    id: 203,
     name: 'Fruits Mix',
     price: 29.00,
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et',
@@ -40,6 +41,8 @@ const itemVariants = {
 };
 
 export default function Menu() {
+  const { addToCart } = useCart();
+
   return (
     <section id="menu" className="py-20 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -104,6 +107,7 @@ export default function Menu() {
                   src={item.image} 
                   alt={item.name} 
                   className="w-56 h-56 rounded-full object-cover shadow-xl border-4 border-white"
+                  referrerPolicy="no-referrer"
                 />
                 <motion.div 
                   initial={{ scale: 0 }}
@@ -122,6 +126,7 @@ export default function Menu() {
                 {item.description}
               </p>
               <motion.button 
+                onClick={() => addToCart({ id: `menu-${item.id}`, name: item.name, price: item.price, image: item.image })}
                 whileHover={{ scale: 1.05, backgroundColor: "#e07a10" }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-primary text-white font-bold py-3 px-10 rounded-full transition-colors duration-300 shadow-md"

@@ -1,31 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, CreditCard, CheckCircle, ChevronLeft, Trash2, Plus, Minus, Loader2 } from 'lucide-react';
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
-const initialCart: CartItem[] = [
-  {
-    id: 1,
-    name: 'Double Cheese Burger',
-    price: 14.99,
-    quantity: 2,
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'
-  },
-  {
-    id: 2,
-    name: 'Spicy Chicken Wings',
-    price: 9.99,
-    quantity: 1,
-    image: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'
-  }
-];
+import { useCart } from '../context/CartContext';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -34,29 +10,16 @@ interface CheckoutModalProps {
 
 export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const [step, setStep] = useState<'CART' | 'PAYMENT' | 'SUCCESS'>('CART');
-  const [cart, setCart] = useState<CartItem[]>(initialCart);
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
 
   // Reset state when modal is closed and reopened
   useEffect(() => {
     if (isOpen && step === 'SUCCESS') {
       setStep('CART');
-      setCart(initialCart);
     }
   }, [isOpen]);
-
-  const updateQuantity = (id: number, delta: number) => {
-    setCart(cart.map(item => {
-      if (item.id === id) {
-        return { ...item, quantity: Math.max(1, item.quantity + delta) };
-      }
-      return item;
-    }));
-  };
-
-  const removeItem = (id: number) => {
-    setCart(cart.filter(item => item.id !== id));
-  };
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const deliveryFee = subtotal > 0 ? 4.99 : 0;
@@ -80,7 +43,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       const existingOrders = JSON.parse(localStorage.getItem('chef_food_orders') || '[]');
       localStorage.setItem('chef_food_orders', JSON.stringify([newOrder, ...existingOrders]));
 
-      setCart([]); // Clear cart on success
+      clearCart(); // Clear cart on success
     }, 2000);
   };
 
@@ -90,7 +53,6 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     setTimeout(() => {
       if (step === 'SUCCESS') {
         setStep('CART');
-        setCart(initialCart);
       }
     }, 300);
   };

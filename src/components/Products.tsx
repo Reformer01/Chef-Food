@@ -1,5 +1,6 @@
 import { Heart, Eye, ShoppingCart } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useCart } from '../context/CartContext';
 
 const products = [
   {
@@ -11,37 +12,37 @@ const products = [
   },
   {
     id: 2,
-    name: 'Classic Burger Combo Food',
-    price: 66.00,
-    oldPrice: 85.00,
+    name: 'Spicy Chicken Burger',
+    price: 55.00,
+    oldPrice: 70.00,
     image: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 3,
-    name: 'Classic Burger Combo Food',
-    price: 66.00,
-    oldPrice: 85.00,
+    name: 'Double Cheese Burger',
+    price: 75.00,
+    oldPrice: 95.00,
     image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 4,
-    name: 'Classic Burger Combo Food',
-    price: 66.00,
-    oldPrice: 85.00,
+    name: 'Vegan Plant Burger',
+    price: 60.00,
+    oldPrice: 80.00,
     image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 5,
-    name: 'Classic Burger Combo Food',
-    price: 66.00,
-    oldPrice: 85.00,
+    name: 'BBQ Bacon Burger',
+    price: 72.00,
+    oldPrice: 90.00,
     image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 6,
-    name: 'Classic Burger Combo Food',
-    price: 66.00,
-    oldPrice: 85.00,
+    name: 'Crispy Fish Burger',
+    price: 58.00,
+    oldPrice: 75.00,
     image: 'https://images.unsplash.com/photo-1619881589316-56c7f9e6b587?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
   },
 ];
@@ -60,6 +61,8 @@ const itemVariants = {
 };
 
 export default function Products() {
+  const { addToCart } = useCart();
+
   return (
     <section id="food" className="py-20 bg-gray-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,6 +101,7 @@ export default function Products() {
                   src={product.image} 
                   alt={product.name} 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2"
+                  referrerPolicy="no-referrer"
                 />
                 
                 {/* Hover Actions */}
@@ -108,7 +112,12 @@ export default function Products() {
                   <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="bg-white/90 backdrop-blur p-2.5 rounded-full shadow-lg text-gray-700 hover:text-primary hover:bg-white transition-colors">
                     <Eye className="w-4 h-4" />
                   </motion.button>
-                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="bg-white/90 backdrop-blur p-2.5 rounded-full shadow-lg text-gray-700 hover:text-primary hover:bg-white transition-colors">
+                  <motion.button 
+                    onClick={() => addToCart({ id: `prod-${product.id}`, name: product.name, price: product.price, image: product.image })}
+                    whileHover={{ scale: 1.1 }} 
+                    whileTap={{ scale: 0.9 }} 
+                    className="bg-white/90 backdrop-blur p-2.5 rounded-full shadow-lg text-gray-700 hover:text-primary hover:bg-white transition-colors"
+                  >
                     <ShoppingCart className="w-4 h-4" />
                   </motion.button>
                 </div>

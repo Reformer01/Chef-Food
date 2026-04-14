@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { Search, User, Heart, ShoppingBag, MapPin, Clock } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Search, User, Heart, ShoppingBag, MapPin, Clock, Menu as MenuIcon, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import DeliveryModal from './DeliveryModal';
 import CheckoutModal from './CheckoutModal';
 import OrdersModal from './OrdersModal';
+import { useCart } from '../context/CartContext';
 
 export default function Header() {
   const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState('Select Address');
   const [deliveryTime, setDeliveryTime] = useState('ASAP');
+  
+  const { totalItems } = useCart();
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -87,18 +91,18 @@ export default function Header() {
               >
                 <MapPin className="w-5 h-5" />
               </motion.button>
-              <motion.button whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.9 }} className="text-gray-700 hover:text-primary transition-colors">
+              <motion.button whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.9 }} className="hidden sm:block text-gray-700 hover:text-primary transition-colors">
                 <Search className="w-5 h-5" />
               </motion.button>
               <motion.button 
                 onClick={() => setIsOrdersOpen(true)}
                 whileHover={{ scale: 1.1, rotate: -5 }} 
                 whileTap={{ scale: 0.9 }} 
-                className="text-gray-700 hover:text-primary transition-colors"
+                className="hidden sm:block text-gray-700 hover:text-primary transition-colors"
               >
                 <User className="w-5 h-5" />
               </motion.button>
-              <motion.button whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.9 }} className="text-gray-700 hover:text-primary transition-colors">
+              <motion.button whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.9 }} className="hidden sm:block text-gray-700 hover:text-primary transition-colors">
                 <Heart className="w-5 h-5" />
               </motion.button>
               <motion.button 
@@ -108,18 +112,63 @@ export default function Header() {
                 className="text-gray-700 hover:text-primary transition-colors relative"
               >
                 <ShoppingBag className="w-5 h-5" />
-                <motion.span 
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", delay: 0.5 }}
-                  className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center"
-                >
-                  2
-                </motion.span>
+                <AnimatePresence>
+                  {totalItems > 0 && (
+                    <motion.span 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ type: "spring" }}
+                      className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center"
+                    >
+                      {totalItems}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+              
+              {/* Mobile Menu Toggle */}
+              <motion.button 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                whileHover={{ scale: 1.1 }} 
+                whileTap={{ scale: 0.9 }} 
+                className="xl:hidden text-gray-700 hover:text-primary transition-colors ml-2"
+              >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
               </motion.button>
             </div>
           </div>
         </div>
+
+        {/* Mobile Navigation Dropdown */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="xl:hidden bg-white border-t border-gray-100 overflow-hidden"
+            >
+              <nav className="flex flex-col px-4 py-4 space-y-4">
+                {navItems.map((item) => (
+                  <a 
+                    key={item.name}
+                    href={item.href} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-gray-700 hover:text-primary font-medium transition-colors"
+                  >
+                    {item.name}
+                  </a>
+                ))}
+                <div className="pt-4 border-t border-gray-100 flex gap-4">
+                  <button onClick={() => { setIsMobileMenuOpen(false); setIsOrdersOpen(true); }} className="flex items-center gap-2 text-gray-700 hover:text-primary">
+                    <User className="w-5 h-5" /> Profile & Orders
+                  </button>
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.header>
 
       <DeliveryModal 
