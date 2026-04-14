@@ -4,17 +4,23 @@ import { motion, AnimatePresence } from 'motion/react';
 import DeliveryModal from './DeliveryModal';
 import CheckoutModal from './CheckoutModal';
 import OrdersModal from './OrdersModal';
+import FavoritesModal from './FavoritesModal';
+import SearchModal from './SearchModal';
 import { useCart } from '../context/CartContext';
+import { useFavorites } from '../context/FavoritesContext';
 
 export default function Header() {
   const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState('Select Address');
   const [deliveryTime, setDeliveryTime] = useState('ASAP');
   
   const { totalItems } = useCart();
+  const { favorites } = useFavorites();
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -91,7 +97,12 @@ export default function Header() {
               >
                 <MapPin className="w-5 h-5" />
               </motion.button>
-              <motion.button whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.9 }} className="hidden sm:block text-gray-700 hover:text-primary transition-colors">
+              <motion.button 
+                onClick={() => setIsSearchOpen(true)}
+                whileHover={{ scale: 1.1, rotate: 5 }} 
+                whileTap={{ scale: 0.9 }} 
+                className="hidden sm:block text-gray-700 hover:text-primary transition-colors"
+              >
                 <Search className="w-5 h-5" />
               </motion.button>
               <motion.button 
@@ -102,8 +113,26 @@ export default function Header() {
               >
                 <User className="w-5 h-5" />
               </motion.button>
-              <motion.button whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.9 }} className="hidden sm:block text-gray-700 hover:text-primary transition-colors">
+              <motion.button 
+                onClick={() => setIsFavoritesOpen(true)}
+                whileHover={{ scale: 1.1, rotate: 5 }} 
+                whileTap={{ scale: 0.9 }} 
+                className="hidden sm:block text-gray-700 hover:text-primary transition-colors relative"
+              >
                 <Heart className="w-5 h-5" />
+                <AnimatePresence>
+                  {favorites.length > 0 && (
+                    <motion.span 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ type: "spring" }}
+                      className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center"
+                    >
+                      {favorites.length}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </motion.button>
               <motion.button 
                 onClick={() => setIsCheckoutOpen(true)}
@@ -160,9 +189,15 @@ export default function Header() {
                     {item.name}
                   </a>
                 ))}
-                <div className="pt-4 border-t border-gray-100 flex gap-4">
+                <div className="pt-4 border-t border-gray-100 flex gap-4 flex-wrap">
+                  <button onClick={() => { setIsMobileMenuOpen(false); setIsSearchOpen(true); }} className="flex items-center gap-2 text-gray-700 hover:text-primary">
+                    <Search className="w-5 h-5" /> Search
+                  </button>
                   <button onClick={() => { setIsMobileMenuOpen(false); setIsOrdersOpen(true); }} className="flex items-center gap-2 text-gray-700 hover:text-primary">
                     <User className="w-5 h-5" /> Profile & Orders
+                  </button>
+                  <button onClick={() => { setIsMobileMenuOpen(false); setIsFavoritesOpen(true); }} className="flex items-center gap-2 text-gray-700 hover:text-primary">
+                    <Heart className="w-5 h-5" /> Favorites
                   </button>
                 </div>
               </nav>
@@ -187,6 +222,16 @@ export default function Header() {
       <OrdersModal 
         isOpen={isOrdersOpen}
         onClose={() => setIsOrdersOpen(false)}
+      />
+
+      <FavoritesModal 
+        isOpen={isFavoritesOpen}
+        onClose={() => setIsFavoritesOpen(false)}
+      />
+
+      <SearchModal 
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
       />
     </>
   );
