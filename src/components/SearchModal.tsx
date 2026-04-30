@@ -110,7 +110,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   >
                     <div className="flex items-center gap-4 pt-2">
                       <div className="flex-1">
-                        <label className="block text-xs font-bold text-gray-500 mb-1">Min Price ($)</label>
+                        <label className="block text-xs font-bold text-gray-500 mb-1">Min Price (₦)</label>
                         <input 
                           type="number"
                           min="0"
@@ -121,7 +121,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         />
                       </div>
                       <div className="flex-1">
-                        <label className="block text-xs font-bold text-gray-500 mb-1">Max Price ($)</label>
+                        <label className="block text-xs font-bold text-gray-500 mb-1">Max Price (₦)</label>
                         <input 
                           type="number"
                           min="0"
@@ -179,7 +179,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             <p className="text-xs text-gray-500 mt-1 line-clamp-2">{item.description}</p>
                           </div>
                           <div className="flex justify-between items-center mt-3">
-                            <span className="font-bold text-primary">${item.price.toFixed(2)}</span>
+                            <span className="font-bold text-primary">₦{item.price.toLocaleString()}</span>
                             <button 
                               onClick={() => addToCart({ id: item.id, name: item.name, price: item.price, image: item.image })} 
                               className="flex items-center gap-1 text-sm font-semibold text-white bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-lg transition-colors"

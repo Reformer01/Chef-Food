@@ -5,27 +5,27 @@ import { ChevronLeft, ChevronRight, Star, Quote } from 'lucide-react';
 const testimonials = [
   {
     id: 1,
-    name: "Sarah Jenkins",
-    role: "Food Critic",
-    text: "Absolutely phenomenal! Every dish is a masterpiece of flavor and presentation. The ambiance and service are top-notch. A must-visit for any food lover.",
+    name: "Chioma Adeleke",
+    role: "Lagos Food Blogger",
+    text: "This is the real deal! Finally found a place that serves authentic party Jollof with that smoky flavor. Delivery is always on time and the food arrives hot. My go-to for weekend treats!",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
   },
   {
     id: 2,
-    name: "Michael Chen",
-    role: "Local Guide",
-    text: "I've been coming here for years, and the quality never drops. The special combo is my go-to. The staff always makes you feel like family.",
+    name: "Emeka Okafor",
+    role: "Lekki Resident",
+    text: "As someone who misses home-cooked meals, ChopLife has been a lifesaver. Their pounded yam and egusi reminds me of my mother's cooking. The suya is also properly spiced!",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
   },
   {
     id: 3,
-    name: "Emily Rodriguez",
-    role: "Lifestyle Blogger",
-    text: "The perfect spot for a weekend brunch or a romantic dinner. The desserts are out of this world! I can't recommend the chocolate lava cake enough.",
+    name: "Amina Yusuf",
+    role: "Corporate Client",
+    text: "We've used ChopLife for our office lunch orders multiple times. The packaging is professional, portions are generous, and everyone loves the variety. Their customer service is top-notch too!",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
   }
 ];
 
@@ -51,8 +51,8 @@ export default function Testimonials() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <p className="uppercase tracking-widest text-sm font-semibold text-primary mb-3">Community Voice</p>
-          <h2 className="font-display text-4xl sm:text-5xl font-bold text-gray-900 mb-6 tracking-tight">What Our Guests Say</h2>
+          <h3 className="uppercase tracking-widest text-sm font-semibold text-primary mb-3">Community Voice</h3>
+          <h2 className="font-display text-4xl sm:text-5xl font-bold text-gray-900 mb-6 tracking-tight">What Our Customers Say</h2>
           <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
         </motion.div>
 

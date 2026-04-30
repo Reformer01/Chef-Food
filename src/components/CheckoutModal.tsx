@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ShoppingBag, CreditCard, CheckCircle, ChevronLeft, Trash2, Plus, Minus, Loader2 } from 'lucide-react';
+import { X, ShoppingBag, CreditCard, CheckCircle, ChevronLeft, Trash2, Plus, Minus, Loader2, Ticket } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import PaystackPayment from './PaystackPayment';
+import CouponModal from './CouponModal';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -15,6 +17,10 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const [step, setStep] = useState<'CART' | 'PAYMENT' | 'SUCCESS'>('CART');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [specialInstructions, setSpecialInstructions] = useState('');
+  const [isCouponOpen, setIsCouponOpen] = useState(false);
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   
   const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
   const { user } = useAuth();
@@ -28,24 +34,24 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   }, [isOpen]);
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = subtotal > 0 ? 4.99 : 0;
-  const total = subtotal + deliveryFee;
+  const deliveryFee = subtotal > 0 ? 3500 : 0;
+  const total = subtotal + deliveryFee - couponDiscount;
 
-  const handlePayment = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleApplyCoupon = (discount: number, code: string) => {
+    setCouponDiscount(discount);
+    setAppliedCoupon(code);
+  };
+
+  const handlePaystackSuccess = async (reference: string) => {
     if (!user) {
       setError("Please login to complete your checkout.");
       return;
     }
 
     setIsProcessing(true);
-    setError(null);
-
+    
     try {
-      // Simulate payment processing delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Save order to Firestore
+      // Save order to Firestore with Paystack reference
       const orderData = {
         userId: user.uid,
         items: cart.map(item => ({
@@ -58,6 +64,9 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         subtotal,
         deliveryFee,
         total,
+        specialInstructions,
+        paymentRef: reference,
+        paymentMethod: 'paystack',
         status: 'pending',
         createdAt: new Date().toISOString()
       };
@@ -65,10 +74,10 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       await addDoc(collection(db, 'orders'), orderData);
 
       setStep('SUCCESS');
-      clearCart(); // Clear cart on success
+      clearCart();
     } catch (err) {
       console.error("Error saving order:", err);
-      setError("Failed to process order. Please try again.");
+      setError("Payment successful but failed to save order. Contact support.");
     } finally {
       setIsProcessing(false);
     }
@@ -168,7 +177,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                                 </button>
                               </div>
                               <div className="flex justify-between items-center mt-2">
-                                <span className="font-bold text-primary">${(item.price * item.quantity).toFixed(2)}</span>
+                                <span className="font-bold text-primary">₦{(item.price * item.quantity).toLocaleString()}</span>
                                 <div className="flex items-center gap-3 bg-white px-2 py-1 rounded-lg border border-gray-200">
                                   <button onClick={() => updateQuantity(item.id, -1)} className="text-gray-500 hover:text-primary"><Minus className="w-4 h-4" /></button>
                                   <span className="font-medium w-4 text-center text-sm">{item.quantity}</span>
@@ -182,20 +191,53 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     )}
 
                     {cart.length > 0 && (
-                      <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-3 mt-8">
-                        <div className="flex justify-between text-gray-600">
-                          <span>Subtotal</span>
-                          <span>${subtotal.toFixed(2)}</span>
+                      <>
+                        {/* Coupon Code */}
+                        <div className="mt-6">
+                          <button
+                            onClick={() => setIsCouponOpen(true)}
+                            className="w-full py-3 px-4 border-2 border-dashed border-primary/30 rounded-xl text-primary hover:border-primary hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
+                          >
+                            <Ticket className="w-5 h-5" />
+                            {appliedCoupon ? `Coupon ${appliedCoupon} Applied (-₦${couponDiscount.toLocaleString()})` : 'Apply Coupon Code'}
+                          </button>
                         </div>
-                        <div className="flex justify-between text-gray-600">
-                          <span>Delivery Fee</span>
-                          <span>${deliveryFee.toFixed(2)}</span>
+
+                        {/* Special Instructions */}
+                        <div className="mt-8">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Special Instructions (Optional)
+                          </label>
+                          <textarea
+                            value={specialInstructions}
+                            onChange={(e) => setSpecialInstructions(e.target.value)}
+                            placeholder="E.g., Less spicy, no onions, extra sauce..."
+                            rows={3}
+                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-none text-sm"
+                          />
                         </div>
-                        <div className="border-t border-gray-200 pt-3 flex justify-between font-bold text-lg text-gray-900">
-                          <span>Total</span>
-                          <span>${total.toFixed(2)}</span>
+
+                        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-3 mt-8">
+                          <div className="flex justify-between text-gray-600">
+                            <span>Subtotal</span>
+                            <span>₦{subtotal.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between text-gray-600">
+                            <span>Delivery Fee</span>
+                            <span>₦{deliveryFee.toLocaleString()}</span>
+                          </div>
+                          {couponDiscount > 0 && (
+                            <div className="flex justify-between text-green-600">
+                              <span>Discount ({appliedCoupon})</span>
+                              <span>-₦{couponDiscount.toLocaleString()}</span>
+                            </div>
+                          )}
+                          <div className="border-t border-gray-200 pt-3 flex justify-between font-bold text-lg text-gray-900">
+                            <span>Total</span>
+                            <span>₦{total.toLocaleString()}</span>
+                          </div>
                         </div>
-                      </div>
+                      </>
                     )}
                   </motion.div>
                 )}
@@ -207,6 +249,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
+                    className="space-y-6"
                   >
                     {!user && (
                       <div className="mb-6 p-4 bg-orange-50 text-orange-700 rounded-xl border border-orange-200 text-sm">
@@ -218,29 +261,44 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                         {error}
                       </div>
                     )}
-                    <form id="payment-form" onSubmit={handlePayment} className="space-y-5">
+                    
+                    {/* Order Summary */}
+                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                      <h3 className="font-semibold text-gray-900 mb-3">Order Summary</h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between text-gray-600">
+                          <span>Subtotal</span>
+                          <span>₦{subtotal.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between text-gray-600">
+                          <span>Delivery Fee</span>
+                          <span>₦{deliveryFee.toLocaleString()}</span>
+                        </div>
+                        <div className="border-t border-gray-200 pt-2 flex justify-between font-bold text-gray-900">
+                          <span>Total</span>
+                          <span>₦{total.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Paystack Payment */}
+                    {user && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Cardholder Name</label>
-                        <input required type="text" placeholder="John Doe" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" />
+                        <PaystackPayment
+                          amount={total}
+                          email={user.email || 'customer@choplife.com'}
+                          onSuccess={handlePaystackSuccess}
+                          onClose={() => setIsProcessing(false)}
+                        />
+                        <CouponModal
+                          isOpen={isCouponOpen}
+                          onClose={() => setIsCouponOpen(false)}
+                          cartTotal={subtotal}
+                          onApplyCoupon={handleApplyCoupon}
+                          appliedCoupon={appliedCoupon}
+                        />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Card Number</label>
-                        <div className="relative">
-                          <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                          <input required type="text" placeholder="0000 0000 0000 0000" maxLength={19} className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
-                          <input required type="text" placeholder="MM/YY" maxLength={5} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">CVC</label>
-                          <input required type="text" placeholder="123" maxLength={4} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" />
-                        </div>
-                      </div>
-                    </form>
+                    )}
                   </motion.div>
                 )}
 
@@ -282,22 +340,13 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     className="w-full bg-primary hover:bg-primary-hover disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 px-4 rounded-xl transition-colors shadow-lg shadow-primary/30 flex justify-between items-center"
                   >
                     <span>Proceed to Checkout</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>₦{total.toLocaleString()}</span>
                   </button>
                 )}
                 {step === 'PAYMENT' && (
-                  <button
-                    form="payment-form"
-                    type="submit"
-                    disabled={isProcessing || !user}
-                    className="w-full bg-primary hover:bg-primary-hover disabled:bg-primary/70 text-white font-bold py-4 px-4 rounded-xl transition-colors shadow-lg shadow-primary/30 flex justify-center items-center gap-2"
-                  >
-                    {isProcessing ? (
-                      <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
-                    ) : (
-                      `Pay $${total.toFixed(2)}`
-                    )}
-                  </button>
+                  <div className="text-center text-sm text-gray-500">
+                    Secure payment powered by Paystack
+                  </div>
                 )}
               </div>
             )}

@@ -74,7 +74,7 @@ export default function FavoritesModal({ isOpen, onClose }: FavoritesModalProps)
                           </button>
                         </div>
                         <div className="flex justify-between items-center mt-2">
-                          <span className="font-bold text-primary">${item.price.toFixed(2)}</span>
+                          <span className="font-bold text-primary">₦{item.price.toLocaleString()}</span>
                           <button 
                             onClick={() => addToCart({ id: item.id, name: item.name, price: item.price, image: item.image })} 
                             className="flex items-center gap-1 text-sm font-semibold text-primary hover:bg-primary/10 px-3 py-1.5 rounded-lg transition-colors"

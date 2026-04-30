@@ -3,21 +3,21 @@ import { motion } from 'motion/react';
 const blogs = [
   {
     id: 1,
-    title: 'The Secret to the Perfect Burger Patty',
-    description: 'Discover the blend of cuts and the exact cooking technique our chefs use to achieve that perfect sear and juicy center...',
-    image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    title: 'The Secret to Perfect Party Jollof Rice',
+    description: 'Discover the techniques our chefs use to achieve that signature smoky flavor that makes Nigerian party Jollof irresistible...',
+    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 2,
-    title: 'Why We Source Local Ingredients',
-    description: 'We visited three of our top local farm partners. Here is why keeping ingredients close to home matters more than ever...',
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    title: 'From Lagos Markets to Your Plate',
+    description: 'We source our fresh peppers, spices, and produce directly from local Nigerian markets. Here is why local matters...',
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 3,
-    title: 'Pairing Sides with Signature Dishes',
-    description: 'Not sure what to get on the side? Our culinary team breaks down the best flavor pairings for your next order...',
-    image: 'https://images.unsplash.com/photo-1619881589316-56c7f9e6b587?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    title: 'The Art of Making Authentic Nigerian Suya',
+    description: 'Learn about the traditional Yaji spice blend and grilling techniques that make our Suya a customer favorite...',
+    image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
   },
 ];
 
@@ -47,9 +47,9 @@ export default function Blog() {
           className="text-center mb-24"
         >
           <h3 className="inline-block rounded-full px-4 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-primary/10 text-primary mb-4">Journal</h3>
-          <h2 className="font-display text-5xl sm:text-6xl font-bold text-neutral-900 mb-6 tracking-tight">Behind the Kitchen</h2>
+          <h2 className="font-display text-5xl sm:text-6xl font-bold text-neutral-900 mb-6 tracking-tight">Nigerian Food Stories</h2>
           <p className="text-neutral-500 max-w-2xl mx-auto leading-relaxed text-lg">
-            Stories, recipes, and updates from our culinary team. Get an exclusive look at what drives our passion.
+            Discover the rich history behind our dishes, cooking tips, and stories from our kitchen to your table.
           </p>
         </motion.div>
 

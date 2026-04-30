@@ -36,9 +36,9 @@ export default function BestSellers() {
           className="text-center mb-24"
         >
           <h3 className="inline-block rounded-full px-4 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-primary/10 text-primary mb-4">Crowd Favorites</h3>
-          <h2 className="font-display text-5xl sm:text-6xl font-bold text-gray-900 mb-6 tracking-tight">Best Sellers</h2>
+          <h2 className="font-display text-5xl sm:text-6xl font-bold text-gray-900 mb-6 tracking-tight">Naija's Best</h2>
           <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed text-lg">
-            Taste the community's favorites. These top-rated selections are crafted daily to guarantee exceptional flavor and satisfaction.
+            Taste Nigeria's favorites. These top-rated dishes are prepared daily to guarantee authentic flavor and satisfaction.
           </p>
         </motion.div>
 
@@ -106,8 +106,8 @@ export default function BestSellers() {
                           </div>
                         </div>
                         <div className={`flex flex-col ${index === 0 ? 'items-end' : 'items-start'}`}>
-                          <span className={`font-display font-bold text-white ${index === 0 ? 'text-4xl' : 'text-3xl'}`}>${product.price.toFixed(2)}</span>
-                          <span className="text-gray-300/60 line-through text-sm">${(product.price * 1.2).toFixed(2)}</span>
+                          <span className={`font-display font-bold text-white ${index === 0 ? 'text-4xl' : 'text-3xl'}`}>₦{product.price.toLocaleString()}</span>
+                          <span className="text-gray-300/60 line-through text-sm">₦{Math.round(product.price * 1.2).toLocaleString()}</span>
                         </div>
                       </div>
 

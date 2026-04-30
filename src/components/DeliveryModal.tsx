@@ -63,7 +63,7 @@ export default function DeliveryModal({ isOpen, onClose, onSave, currentAddress,
                     className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                   />
                   <button 
-                    onClick={() => setAddress('123 Main St, New York, NY')}
+                    onClick={() => setAddress('12 Admiralty Way, Lekki Phase 1, Lagos')}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary-hover"
                     title="Use current location"
                   >
@@ -74,13 +74,13 @@ export default function DeliveryModal({ isOpen, onClose, onSave, currentAddress,
                 {/* Saved Addresses */}
                 <div className="flex gap-3 mt-3">
                   <button 
-                    onClick={() => setAddress('123 Main St, Apt 4B')}
+                    onClick={() => setAddress('15A Bourdillon Road, Ikoyi, Lagos')}
                     className="flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm font-medium text-gray-700 transition-colors border border-gray-200"
                   >
                     <Home className="w-4 h-4" /> Home
                   </button>
                   <button 
-                    onClick={() => setAddress('456 Business Pkwy, Suite 100')}
+                    onClick={() => setAddress('Plot 1234, Adeola Odeku Street, Victoria Island, Lagos')}
                     className="flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm font-medium text-gray-700 transition-colors border border-gray-200"
                   >
                     <Briefcase className="w-4 h-4" /> Work
@@ -126,12 +126,11 @@ export default function DeliveryModal({ isOpen, onClose, onSave, currentAddress,
                       onChange={(e) => setScheduledTime(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all appearance-none bg-white"
                     >
-                      <option value="Today, 5:00 PM">Today, 5:00 PM</option>
-                      <option value="Today, 5:30 PM">Today, 5:30 PM</option>
+                      <option value="Today, 12:00 PM">Today, 12:00 PM</option>
+                      <option value="Today, 1:00 PM">Today, 1:00 PM</option>
+                      <option value="Today, 2:00 PM">Today, 2:00 PM</option>
                       <option value="Today, 6:00 PM">Today, 6:00 PM</option>
-                      <option value="Today, 6:30 PM">Today, 6:30 PM</option>
                       <option value="Today, 7:00 PM">Today, 7:00 PM</option>
-                      <option value="Today, 7:30 PM">Today, 7:30 PM</option>
                       <option value="Today, 8:00 PM">Today, 8:00 PM</option>
                     </select>
                   </motion.div>

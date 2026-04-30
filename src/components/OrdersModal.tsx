@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Clock, Package, ChevronRight, ChevronDown, Loader2, CheckCircle2, XCircle, Clock4, ChefHat } from 'lucide-react';
+import { X, Clock, Package, ChevronRight, ChevronDown, Loader2, CheckCircle2, XCircle, Clock4, ChefHat, RotateCcw, Ban } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
+import { useCart } from '../context/CartContext';
+import { collection, query, where, onSnapshot, orderBy, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 interface OrderItem {
@@ -30,7 +31,9 @@ export default function OrdersModal({ isOpen, onClose }: OrdersModalProps) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedOrders, setExpandedOrders] = useState<string[]>([]);
+  const [cancellingOrder, setCancellingOrder] = useState<string | null>(null);
   const { user } = useAuth();
+  const { addToCart } = useCart();
 
   const toggleOrder = (orderId: string) => {
     setExpandedOrders(prev => 
@@ -38,6 +41,33 @@ export default function OrdersModal({ isOpen, onClose }: OrdersModalProps) {
         ? prev.filter(id => id !== orderId)
         : [...prev, orderId]
     );
+  };
+
+  const handleReorder = (order: Order) => {
+    order.items.forEach((item) => {
+      addToCart({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.image
+      });
+    });
+    onClose();
+  };
+
+  const handleCancelOrder = async (orderId: string) => {
+    setCancellingOrder(orderId);
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, {
+        status: 'cancelled',
+        cancelledAt: new Date().toISOString()
+      });
+    } catch (err) {
+      console.error('Error cancelling order:', err);
+    } finally {
+      setCancellingOrder(null);
+    }
   };
 
   useEffect(() => {
@@ -93,12 +123,22 @@ export default function OrdersModal({ isOpen, onClose }: OrdersModalProps) {
           color: 'bg-yellow-100 text-yellow-700 border-yellow-200',
           icon: <Clock4 className="w-3 h-3 mr-1" />
         };
-      case 'processing':
+      case 'confirmed':
         return {
           color: 'bg-blue-100 text-blue-700 border-blue-200',
+          icon: <CheckCircle2 className="w-3 h-3 mr-1" />
+        };
+      case 'preparing':
+        return {
+          color: 'bg-orange-100 text-orange-700 border-orange-200',
           icon: <ChefHat className="w-3 h-3 mr-1" />
         };
-      case 'completed':
+      case 'out_for_delivery':
+        return {
+          color: 'bg-purple-100 text-purple-700 border-purple-200',
+          icon: <Package className="w-3 h-3 mr-1" />
+        };
+      case 'delivered':
         return {
           color: 'bg-green-100 text-green-700 border-green-200',
           icon: <CheckCircle2 className="w-3 h-3 mr-1" />
@@ -193,7 +233,7 @@ export default function OrdersModal({ isOpen, onClose }: OrdersModalProps) {
                             <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-gray-900">${order.total.toFixed(2)}</p>
+                            <p className="font-bold text-gray-900">₦{order.total.toLocaleString()}</p>
                             <p className="text-xs text-gray-400">ID: {order.id.slice(0, 8)}</p>
                           </div>
                         </div>
@@ -231,7 +271,7 @@ export default function OrdersModal({ isOpen, onClose }: OrdersModalProps) {
                                         {item.quantity}x
                                       </div>
                                       <p className="text-sm text-gray-700 flex-1 truncate">{item.name}</p>
-                                      <p className="text-sm font-medium text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
+                                      <p className="text-sm font-medium text-gray-900">₦{(item.price * item.quantity).toLocaleString()}</p>
                                     </div>
                                   ))}
                                 </div>
@@ -240,9 +280,27 @@ export default function OrdersModal({ isOpen, onClose }: OrdersModalProps) {
                           </AnimatePresence>
                         </div>
                         
-                        <button className="mt-4 w-full py-2 text-sm font-semibold text-primary hover:bg-primary/5 rounded-lg transition-colors flex items-center justify-center gap-1">
-                          Reorder <ChevronRight className="w-4 h-4" />
-                        </button>
+                        <div className="flex gap-2 mt-4">
+                          <button 
+                            onClick={() => handleReorder(order)}
+                            className="flex-1 py-2 text-sm font-semibold text-primary hover:bg-primary/5 rounded-lg transition-colors flex items-center justify-center gap-1"
+                          >
+                            <RotateCcw className="w-4 h-4" /> Reorder
+                          </button>
+                          {(order.status === 'pending' || order.status === 'confirmed') && (
+                            <button 
+                              onClick={() => handleCancelOrder(order.id)}
+                              disabled={cancellingOrder === order.id}
+                              className="flex-1 py-2 text-sm font-semibold text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center gap-1 disabled:opacity-50"
+                            >
+                              {cancellingOrder === order.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <><Ban className="w-4 h-4" /> Cancel</>
+                              )}
+                            </button>
+                          )}
+                        </div>
                       </motion.div>
                     );
                   })}

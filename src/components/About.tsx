@@ -13,9 +13,9 @@ export default function About() {
           className="text-center mb-24"
         >
           <h3 className="inline-block rounded-full px-4 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-primary/10 text-primary mb-4">Our Story</h3>
-          <h2 className="font-display text-5xl sm:text-6xl font-bold text-neutral-900 mb-6 tracking-tight">The Origin of Taste</h2>
+          <h2 className="font-display text-5xl sm:text-6xl font-bold text-neutral-900 mb-6 tracking-tight">Bringing Home to You</h2>
           <p className="text-neutral-500 max-w-2xl mx-auto leading-relaxed text-lg">
-            Founded with a passion for exceptional flavor, our journey began in a small kitchen and has grown into a destination for food lovers everywhere.
+            Founded with love for authentic Nigerian cuisine, our journey began in a Lagos kitchen and has grown into a beloved destination for taste of home.
           </p>
         </motion.div>
 
@@ -35,8 +35,8 @@ export default function About() {
                   <motion.img 
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-                    src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
-                    alt="Burger" 
+                    src="https://images.unsplash.com/photo-1512058564366-18510be2db19?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                    alt="Nigerian Jollof Rice" 
                     className="w-full h-48 sm:h-64 object-cover"
                     referrerPolicy="no-referrer"
                   />
@@ -47,8 +47,8 @@ export default function About() {
                   <motion.img 
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-                    src="https://images.unsplash.com/photo-1562967914-608f82629710?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
-                    alt="Fried Chicken" 
+                    src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                    alt="Nigerian Suya" 
                     className="w-full h-48 sm:h-64 object-cover"
                     referrerPolicy="no-referrer"
                   />
@@ -61,8 +61,8 @@ export default function About() {
                   <motion.img 
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-                    src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
-                    alt="Tacos" 
+                    src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                    alt="Pounded Yam and Egusi" 
                     className="absolute inset-0 w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                   />
@@ -80,28 +80,28 @@ export default function About() {
             className="flex flex-col items-start"
           >
             <h3 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-neutral-900 mb-8 tracking-tight leading-[1.05]">
-              Fresh Ingredients Every Single Morning.
+              Authentic Taste in Every Bite.
             </h3>
             <p className="text-neutral-500 mb-10 leading-relaxed text-lg max-w-lg">
-              We believe that the secret to a great meal lies in its ingredients. That’s why we partner with local farmers to bring you the freshest produce, meats, and dairy every single day. Taste the difference that true dedication makes.
+              We believe the secret to great Nigerian food lies in authentic ingredients. That's why we source the best local rice, fresh peppers, assorted meats, and traditional spices. From our smoky party Jollof to our spicy Suya, taste the true flavor of Nigeria.
             </p>
             
             <div className="grid grid-cols-3 gap-6 mb-12 w-full max-w-lg">
               <div className="flex flex-col">
-                <span className="font-display text-4xl font-bold text-neutral-900">12+</span>
+                <span className="font-display text-4xl font-bold text-neutral-900">8+</span>
                 <span className="text-neutral-400 text-[10px] font-medium uppercase tracking-[0.2em] mt-2">Years</span>
               </div>
               <div className="w-px h-full bg-neutral-200 justify-self-center"></div>
               <div className="flex flex-col">
-                <span className="font-display text-4xl font-bold text-neutral-900">50k</span>
-                <span className="text-neutral-400 text-[10px] font-medium uppercase tracking-[0.2em] mt-2">Orders</span>
+                <span className="font-display text-4xl font-bold text-neutral-900">100k+</span>
+                <span className="text-neutral-400 text-[10px] font-medium uppercase tracking-[0.2em] mt-2">Deliveries</span>
               </div>
             </div>
 
             <button 
               className="group relative inline-flex items-center gap-4 bg-neutral-900 hover:bg-black text-white font-medium pl-8 pr-2 py-2 rounded-full transition-all duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)]"
             >
-              <span>Explore Our Farm</span>
+              <span>View Our Menu</span>
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 group-hover:bg-white/20 transition-all duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />

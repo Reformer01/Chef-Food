@@ -6,6 +6,8 @@ import CheckoutModal from './CheckoutModal';
 import OrdersModal from './OrdersModal';
 import FavoritesModal from './FavoritesModal';
 import SearchModal from './SearchModal';
+import UserProfile from './UserProfile';
+import ContactModal from './ContactModal';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
@@ -16,6 +18,8 @@ export default function Header() {
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState('Select Address');
   const [deliveryTime, setDeliveryTime] = useState('ASAP');
@@ -51,11 +55,14 @@ export default function Header() {
             className="fixed inset-0 z-40 bg-neutral-900/40 backdrop-blur-3xl flex flex-col justify-center items-center"
           >
             <nav className="flex flex-col items-center space-y-8">
-              {navItems.map((item, i) => (
+              {[
+                ...navItems,
+                { name: 'Contact Us', href: '#contact', onClick: () => { setIsMobileMenuOpen(false); setIsContactOpen(true); } }
+              ].map((item, i) => (
                 <div key={item.name} className="overflow-hidden">
                   <motion.a 
-                    href={item.href} 
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    href={item.href}
+                    onClick={() => (item as any).onClick ? (item as any).onClick() : setIsMobileMenuOpen(false)}
                     initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 20, opacity: 0 }}
@@ -79,7 +86,7 @@ export default function Header() {
                 </button>
                 {user ? (
                   <>
-                    <button onClick={() => { setIsMobileMenuOpen(false); setIsOrdersOpen(true); }} className="p-3 bg-white/10 rounded-full text-neutral-50 hover:bg-primary transition-colors">
+                    <button onClick={() => { setIsMobileMenuOpen(false); setIsProfileOpen(true); }} className="p-3 bg-white/10 rounded-full text-neutral-50 hover:bg-primary transition-colors">
                       <User className="w-6 h-6" />
                     </button>
                     <button onClick={() => { setIsMobileMenuOpen(false); logout(); }} className="p-3 bg-white/10 rounded-full text-red-400 hover:bg-red-500 hover:text-white transition-colors">
@@ -123,7 +130,7 @@ export default function Header() {
               href="#" 
               className="font-display text-2xl tracking-tight font-bold flex items-center gap-1 text-neutral-900"
             >
-              Grillino<span className="text-primary text-3xl">.</span>
+              ChopLife<span className="text-primary text-3xl">.</span>
             </motion.a>
 
             {/* Navigation */}
@@ -147,6 +154,15 @@ export default function Header() {
               >
                 <Search className="w-4 h-4" />
               </button>
+
+              {user && (
+                <button 
+                  onClick={() => setIsProfileOpen(true)}
+                  className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full hover:bg-neutral-100 transition-colors text-neutral-600"
+                >
+                  <User className="w-4 h-4" />
+                </button>
+              )}
               
               <button 
                 onClick={() => setIsCheckoutOpen(true)}
@@ -209,6 +225,16 @@ export default function Header() {
       <SearchModal 
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
+      />
+
+      <UserProfile
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+      />
+
+      <ContactModal
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
       />
     </>
   );

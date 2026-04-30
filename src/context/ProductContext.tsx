@@ -23,96 +23,126 @@ interface ProductContextType {
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
-// Initial products to seed the database if it's empty
+// Initial products to seed the database if it's empty - Nigerian cuisine focused
 const initialProducts: Omit<Product, 'id'>[] = [
   {
-    name: 'Classic Burger',
-    description: 'Juicy beef patty with fresh lettuce, tomatoes, and our signature sauce.',
-    price: 12.99,
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=800',
-    category: 'Burgers',
-    rating: 4.8,
-    reviews: 124,
-    isBestSeller: true
-  },
-  {
-    name: 'Double Cheese Burger',
-    description: 'Double the cheese, double the fun. Two patties, melted cheddar, and crispy onions.',
-    price: 15.99,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=800',
-    category: 'Burgers',
+    name: 'Party Jollof Rice',
+    description: 'Smoky, flavorful Nigerian party Jollof rice cooked over firewood flavor, served with grilled chicken and fried plantain.',
+    price: 12500,
+    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&q=80&w=800',
+    category: 'Rice Dishes',
     rating: 4.9,
-    reviews: 89,
+    reviews: 324,
     isBestSeller: true
   },
   {
-    name: 'Spicy Chicken Burger',
-    description: 'Hot and spicy chicken burger for the brave. Crispy chicken breast with spicy mayo.',
-    price: 13.99,
-    image: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?auto=format&fit=crop&q=80&w=800',
-    category: 'Chicken',
+    name: 'Suya Platter',
+    description: 'Spicy grilled beef skewers with authentic Yaji spice, onions, and tomatoes. A Northern Nigerian specialty.',
+    price: 8500,
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=800',
+    category: 'Grills',
+    rating: 4.8,
+    reviews: 289,
+    isBestSeller: true
+  },
+  {
+    name: 'Pounded Yam & Egusi',
+    description: 'Smooth pounded yam served with rich egusi soup, assorted meats, and dried fish.',
+    price: 15000,
+    image: 'https://images.unsplash.com/photo-1626804475297-411d863b67ab?auto=format&fit=crop&q=80&w=800',
+    category: 'Swallow',
+    rating: 4.9,
+    reviews: 410,
+    isBestSeller: true
+  },
+  {
+    name: 'Amala & Ewedu',
+    description: 'Soft yam flour amala with drawy ewedu soup, gbegiri, and assorted beef.',
+    price: 11000,
+    image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&q=80&w=800',
+    category: 'Swallow',
     rating: 4.7,
-    reviews: 210,
+    reviews: 198,
     isBestSeller: false
   },
   {
-    name: 'Vegan Plant Burger',
-    description: '100% plant-based burger that tastes like the real deal. Served with vegan cheese.',
-    price: 14.99,
-    image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&q=80&w=800',
-    category: 'Vegan',
+    name: 'Fried Rice Special',
+    description: 'Nigerian-style fried rice with mixed vegetables, chicken chunks, and fried plantain.',
+    price: 11500,
+    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&q=80&w=800',
+    category: 'Rice Dishes',
     rating: 4.6,
     reviews: 156,
+    isBestSeller: false
+  },
+  {
+    name: 'Pepper Soup (Goat)',
+    description: 'Hot and spicy traditional pepper soup with tender goat meat, utazi leaves, and spices.',
+    price: 9500,
+    image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&q=80&w=800',
+    category: 'Soups',
+    rating: 4.8,
+    reviews: 245,
     isBestSeller: true
   },
   {
-    name: 'BBQ Bacon Burger',
-    description: 'Smoky BBQ sauce with crispy bacon, cheddar cheese, and onion rings.',
-    price: 16.99,
-    image: 'https://images.unsplash.com/photo-1589302168068-964664d93cb0?auto=format&fit=crop&q=80&w=800',
-    category: 'Burgers',
+    name: 'Ofada Rice & Sauce',
+    description: 'Local Ofada rice with authentic ayamase sauce (ofada stew), boiled eggs, and plantain.',
+    price: 13000,
+    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&q=80&w=800',
+    category: 'Rice Dishes',
+    rating: 4.7,
+    reviews: 178,
+    isBestSeller: false
+  },
+  {
+    name: 'Chapman Cocktail',
+    description: 'Nigeria\'s favorite mocktail - refreshing mix of Fanta, Sprite, grenadine, cucumber, and orange.',
+    price: 4500,
+    image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&q=80&w=800',
+    category: 'Drinks',
     rating: 4.9,
-    reviews: 342,
+    reviews: 312,
     isBestSeller: true
   },
   {
-    name: 'Crispy Fish Burger',
-    description: 'Freshly caught fish, breaded and fried to perfection. Served with tartar sauce.',
-    price: 13.50,
-    image: 'https://images.unsplash.com/photo-1619881589316-56c7f9e6b587?auto=format&fit=crop&q=80&w=800',
-    category: 'Seafood',
+    name: 'Akara & Pap',
+    description: 'Crispy bean fritters (Akara) served with warm pap (ogi). Perfect breakfast combo.',
+    price: 5500,
+    image: 'https://images.unsplash.com/photo-1546552356-3fae876a61ca?auto=format&fit=crop&q=80&w=800',
+    category: 'Breakfast',
+    rating: 4.6,
+    reviews: 145,
+    isBestSeller: false
+  },
+  {
+    name: 'Moin Moin Deluxe',
+    description: 'Steamed bean pudding with eggs, fish, and corned beef. Nutritious and delicious.',
+    price: 4500,
+    image: 'https://images.unsplash.com/photo-1564834724105-918b73d1b9e0?auto=format&fit=crop&q=80&w=800',
+    category: 'Sides',
     rating: 4.5,
     reviews: 98,
     isBestSeller: false
   },
   {
-    name: 'Chipotle Chicken',
-    description: 'Grilled chicken breast with spicy chipotle sauce, avocado, and lettuce.',
-    price: 14.50,
-    image: 'https://images.unsplash.com/photo-1588168333986-5078d3ae3976?auto=format&fit=crop&q=80&w=800',
-    category: 'Chicken',
+    name: 'Coconut Rice',
+    description: 'Fragrant rice cooked in coconut milk with shredded coconut, vegetables, and protein.',
+    price: 11000,
+    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&q=80&w=800',
+    category: 'Rice Dishes',
     rating: 4.7,
-    reviews: 112,
+    reviews: 167,
     isBestSeller: false
   },
   {
-    name: 'Spicy Club',
-    description: 'Triple-decker sandwich with spicy turkey, bacon, lettuce, and tomato.',
-    price: 11.99,
-    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&q=80&w=800',
-    category: 'Sandwiches',
-    rating: 4.6,
-    reviews: 85,
-    isBestSeller: false
-  },
-  {
-    name: 'Fruits Mix',
-    description: 'Fresh seasonal fruits mixed with honey and mint.',
-    price: 8.99,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=800',
-    category: 'Desserts',
+    name: 'Boli & Groundnut',
+    description: 'Roasted ripe plantain (Boli) paired with spicy groundnut sauce. Street food favorite!',
+    price: 3500,
+    image: 'https://images.unsplash.com/photo-1603833665851-e6d878f9ead1?auto=format&fit=crop&q=80&w=800',
+    category: 'Snacks',
     rating: 4.8,
-    reviews: 230,
+    reviews: 223,
     isBestSeller: false
   }
 ];

@@ -15,6 +15,7 @@ import Testimonials from './components/Testimonials';
 import Gallery from './components/Gallery';
 import Blog from './components/Blog';
 import Footer from './components/Footer';
+import WhatsAppButton from './components/WhatsAppButton';
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
         <Blog />
       </main>
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 }

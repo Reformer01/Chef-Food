@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../context/ProductContext';
 
-const tabs = ['Lunch', 'Dinner', 'Breakfast', 'Party', 'Beverage'];
+const tabs = ['Rice Dishes', 'Swallow', 'Grills', 'Soups', 'Drinks'];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -36,9 +36,9 @@ export default function Menu() {
           className="text-center mb-20"
         >
           <h3 className="inline-block rounded-full px-4 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-primary/10 text-primary mb-4">The Menu</h3>
-          <h2 className="font-display text-5xl sm:text-6xl font-bold text-neutral-900 mb-6 tracking-tight">Explore Our Menu</h2>
+          <h2 className="font-display text-5xl sm:text-6xl font-bold text-neutral-900 mb-6 tracking-tight">Nigerian Delicacies</h2>
           <p className="text-neutral-500 max-w-2xl mx-auto leading-relaxed text-lg">
-            From hearty breakfasts to elegant dinners, dive into our extensive menu. Every dish is prepared to order using authentic recipes.
+            From smoky Jollof Rice to spicy Suya and traditional Swallows, explore our menu of authentic Nigerian dishes prepared with love.
           </p>
         </motion.div>
 
@@ -112,7 +112,7 @@ export default function Menu() {
                         className={`absolute ${isEven ? 'bottom-4 right-4' : 'bottom-4 left-4'} bg-white text-neutral-900 rounded-full w-28 h-28 flex flex-col items-center justify-center shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] ring-1 ring-black/5 z-20 group-hover:scale-110 transition-transform duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)]`}
                       >
                         <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500 mb-1">Only</span>
-                        <span className="text-3xl font-display font-bold text-primary">${item.price.toFixed(0)}</span>
+                        <span className="font-display font-bold text-primary">₦{item.price.toLocaleString()}</span>
                       </motion.div>
                     </div>
                   </div>

@@ -1,8 +1,10 @@
-import { Heart, Eye, ShoppingCart } from 'lucide-react';
+import { Heart, Star, ShoppingCart, MessageCircle } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useProducts } from '../context/ProductContext';
+import ProductReview from './ProductReview';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -21,6 +23,7 @@ export default function Products() {
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const { products, loading } = useProducts();
+  const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | null>(null);
 
   // Show only a few products here
   const displayProducts = products.slice(0, 6);
@@ -37,9 +40,9 @@ export default function Products() {
           className="text-center mb-24"
         >
           <h3 className="inline-block rounded-full px-4 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-primary/10 text-primary mb-4">Our Selection</h3>
-          <h2 className="font-display text-5xl sm:text-6xl font-bold text-gray-900 mb-6 tracking-tight">Signature Offerings</h2>
+          <h2 className="font-display text-5xl sm:text-6xl font-bold text-gray-900 mb-6 tracking-tight">Nigerian Favorites</h2>
           <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed text-lg">
-            Discover our carefully curated selection of signature dishes, crafted with the freshest seasonal ingredients and culinary expertise.
+            Discover our carefully curated selection of authentic Nigerian dishes, from party Jollof to traditional Swallows and Grills.
           </p>
         </motion.div>
 
@@ -107,9 +110,28 @@ export default function Products() {
                           </div>
                         </div>
                         <div className="flex flex-col items-end">
-                          <span className="font-display font-bold text-white text-3xl">${product.price.toFixed(2)}</span>
-                          <span className="text-gray-300/60 line-through text-sm">${(product.price * 1.2).toFixed(2)}</span>
+                          <span className="font-display font-bold text-white text-3xl">₦{product.price.toLocaleString()}</span>
+                          <span className="text-gray-300/60 line-through text-sm">₦{Math.round(product.price * 1.2).toLocaleString()}</span>
                         </div>
+                      </div>
+
+                      {/* Rating & Reviews */}
+                      <div className="flex items-center gap-4 mb-3">
+                        <button
+                          onClick={() => setSelectedProduct({ id: product.id, name: product.name })}
+                          className="flex items-center gap-1 text-white/80 hover:text-white transition-colors"
+                        >
+                          <Star className="w-4 h-4 fill-primary text-primary" />
+                          <span className="text-sm">{product.rating || 4.5}</span>
+                          <span className="text-sm text-white/60">({product.reviews || 0} reviews)</span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedProduct({ id: product.id, name: product.name })}
+                          className="flex items-center gap-1 text-white/60 hover:text-white text-sm transition-colors"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          Write Review
+                        </button>
                       </div>
 
                       {/* Actions Row */}
@@ -141,6 +163,13 @@ export default function Products() {
           </motion.div>
         )}
       </div>
+
+      <ProductReview
+        isOpen={!!selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        productId={selectedProduct?.id || ''}
+        productName={selectedProduct?.name || ''}
+      />
     </section>
   );
 }

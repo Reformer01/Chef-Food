@@ -9,7 +9,7 @@ export default function Hero() {
         animate={{ scale: 1, opacity: 0.7 }}
         transition={{ duration: 1.5, ease: "easeOut" }}
         className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")' }}
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1512058564366-18510be2db19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")' }}
       />
       
       {/* Gradient Overlay */}
@@ -27,19 +27,19 @@ export default function Hero() {
             initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}
             className="uppercase tracking-[0.2em] text-primary text-sm font-semibold mb-6"
           >
-            Curated Artisanal Cuisine
+            Authentic Nigerian Flavors
           </motion.h2>
           <motion.h1 
             initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.7 }}
             className="font-display text-5xl sm:text-6xl md:text-8xl font-bold mb-6 tracking-tighter leading-[0.95]"
           >
-            Experience <br/> Exceptional <br/> Fast Food.
+            Taste <br/> Nigeria's <br/> Finest.
           </motion.h1>
           <motion.p 
             initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.9 }}
             className="text-lg md:text-xl mb-10 text-neutral-300 max-w-md leading-relaxed"
           >
-            Elevating everyday food with premium ingredients, masterful preparation, and lightning-fast delivery.
+            From smoky Jollof Rice to spicy Suya, experience authentic Nigerian cuisine delivered fast to your doorstep in Lagos, Abuja & beyond.
           </motion.p>
           <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 1.1 }}>
             <button 
