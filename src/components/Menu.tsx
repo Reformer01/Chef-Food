@@ -1,29 +1,6 @@
 import { motion } from 'motion/react';
 import { useCart } from '../context/CartContext';
-
-const menuItems = [
-  {
-    id: 201,
-    name: 'Chipotle Chicken',
-    price: 36.00,
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et',
-    image: 'https://images.unsplash.com/photo-1588168333986-5078d3ae3976?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 202,
-    name: 'Spicy Club',
-    price: 46.00,
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et',
-    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 203,
-    name: 'Fruits Mix',
-    price: 29.00,
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et',
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-  },
-];
+import { useProducts } from '../context/ProductContext';
 
 const tabs = ['Lunch', 'Dinner', 'Breakfast', 'Party', 'Beverage'];
 
@@ -42,21 +19,26 @@ const itemVariants = {
 
 export default function Menu() {
   const { addToCart } = useCart();
+  const { products, loading } = useProducts();
+
+  // For the menu, we'll show a different set of products or just the first few
+  const menuItems = products.slice(0, 3);
 
   return (
-    <section id="menu" className="py-20 bg-white overflow-hidden">
+    <section id="menu" className="py-32 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
+          className="text-center mb-20"
         >
-          <h3 className="font-script text-primary text-3xl mb-2">Menu</h3>
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Check Our Menu</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magni commodi doloribus natus. Distinctio rerum repellendus incidunt magni molestias
+          <h3 className="inline-block rounded-full px-4 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-primary/10 text-primary mb-4">The Menu</h3>
+          <h2 className="font-display text-5xl sm:text-6xl font-bold text-neutral-900 mb-6 tracking-tight">Explore Our Menu</h2>
+          <p className="text-neutral-500 max-w-2xl mx-auto leading-relaxed text-lg">
+            From hearty breakfasts to elegant dinners, dive into our extensive menu. Every dish is prepared to order using authentic recipes.
           </p>
         </motion.div>
 
@@ -65,18 +47,18 @@ export default function Menu() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-4 mb-16"
+          transition={{ delay: 0.2, duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
+          className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-24"
         >
           {tabs.map((tab, index) => (
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               key={tab}
-              className={`px-8 py-2.5 rounded-full font-semibold transition-colors ${
+              className={`px-8 py-3 rounded-full font-medium transition-colors border ${
                 index === 0 
-                  ? 'bg-primary text-white shadow-lg shadow-primary/30' 
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-neutral-900 text-white border-neutral-900 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)]' 
+                  : 'bg-white text-neutral-600 border-neutral-200 hover:border-neutral-900/20 hover:bg-neutral-50'
               }`}
             >
               {tab}
@@ -85,57 +67,93 @@ export default function Menu() {
         </motion.div>
 
         {/* Grid */}
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-        >
-          {menuItems.map((item) => (
-            <motion.div 
-              variants={itemVariants}
-              whileHover={{ y: -10 }}
-              key={item.id} 
-              className="bg-white rounded-3xl p-8 text-center border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-300"
-            >
-              {/* Image with Price Tag */}
-              <div className="relative inline-block mb-8">
-                <motion.img 
-                  whileHover={{ rotate: 5, scale: 1.05 }}
-                  transition={{ type: "spring", bounce: 0.5 }}
-                  src={item.image} 
-                  alt={item.name} 
-                  className="w-56 h-56 rounded-full object-cover shadow-xl border-4 border-white"
-                  referrerPolicy="no-referrer"
-                />
-                <motion.div 
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ type: "spring", bounce: 0.6, delay: 0.3 }}
-                  className="absolute top-2 left-2 bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center font-bold shadow-lg border-4 border-white text-lg"
-                >
-                  ${item.price.toFixed(0)}
-                </motion.div>
-              </div>
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        ) : (
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-100px" }}
+            className="flex flex-col gap-24 lg:gap-32"
+          >
+            {menuItems.map((item, index) => {
+              const isEven = index % 2 === 0;
 
-              {/* Content */}
-              <h4 className="text-2xl font-bold text-gray-900 mb-4">{item.name}</h4>
-              <p className="text-gray-500 text-sm mb-8 leading-relaxed px-4">
-                {item.description}
-              </p>
-              <motion.button 
-                onClick={() => addToCart({ id: `menu-${item.id}`, name: item.name, price: item.price, image: item.image })}
-                whileHover={{ scale: 1.05, backgroundColor: "#e07a10" }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-primary text-white font-bold py-3 px-10 rounded-full transition-colors duration-300 shadow-md"
-              >
-                ORDER NOW
-              </motion.button>
-            </motion.div>
-          ))}
-        </motion.div>
+              return (
+                <motion.div 
+                  variants={itemVariants}
+                  key={item.id} 
+                  className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-24 items-center`}
+                >
+                  {/* Image Container */}
+                  <div className="w-full lg:w-1/2 relative">
+                    <div className="bg-black/5 ring-1 ring-black/5 p-2 sm:p-2.5 rounded-full aspect-square w-full max-w-md mx-auto relative group">
+                      <div className="absolute inset-0 bg-primary/5 rounded-full blur-3xl transform scale-90 translate-y-8" />
+                      
+                      <div className="rounded-[calc(9999px-0.5rem)] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] relative w-full h-full bg-white">
+                        <motion.img 
+                          whileHover={{ rotate: 5, scale: 1.05 }}
+                          transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
+                          src={item.image} 
+                          alt={item.name} 
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                      
+                      <motion.div 
+                        initial={{ scale: 0 }}
+                        whileInView={{ scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ type: "spring", bounce: 0.6, delay: 0.3 }}
+                        className={`absolute ${isEven ? 'bottom-4 right-4' : 'bottom-4 left-4'} bg-white text-neutral-900 rounded-full w-28 h-28 flex flex-col items-center justify-center shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] ring-1 ring-black/5 z-20 group-hover:scale-110 transition-transform duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)]`}
+                      >
+                        <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500 mb-1">Only</span>
+                        <span className="text-3xl font-display font-bold text-primary">${item.price.toFixed(0)}</span>
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Content Container */}
+                  <div className={`w-full lg:w-1/2 flex flex-col ${isEven ? 'items-start text-left' : 'items-center lg:items-end text-center lg:text-right'}`}>
+                    <h4 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-neutral-900 mb-6 tracking-tight leading-tight">{item.name}</h4>
+                    <p className="text-neutral-500 text-lg mb-10 leading-relaxed max-w-lg">
+                      {item.description}
+                    </p>
+                    
+                    {/* Nutritional / Extra Info (Mock) */}
+                    <div className={`flex gap-8 mb-12 ${isEven ? 'justify-start' : 'justify-center lg:justify-end'} w-full max-w-lg`}>
+                      <div className="flex flex-col">
+                        <span className="text-neutral-400 text-[10px] font-medium uppercase tracking-[0.2em] mb-2">Calories</span>
+                        <span className="font-display font-bold text-neutral-900 text-2xl">450 <span className="text-sm font-normal text-neutral-500">kcal</span></span>
+                      </div>
+                      <div className="w-px h-12 bg-neutral-200" />
+                      <div className="flex flex-col">
+                        <span className="text-neutral-400 text-[10px] font-medium uppercase tracking-[0.2em] mb-2">Prep Time</span>
+                        <span className="font-display font-bold text-neutral-900 text-2xl">15 <span className="text-sm font-normal text-neutral-500">Mins</span></span>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={() => addToCart({ id: item.id, name: item.name, price: item.price, image: item.image })}
+                      className="group relative inline-flex items-center gap-4 bg-primary hover:bg-primary-hover text-white font-medium pl-8 pr-2 py-2 rounded-full transition-all duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] shadow-[0_20px_40px_-15px_rgba(139,94,52,0.4)] tracking-wide"
+                    >
+                      <span>Add to Selected</span>
+                      <span className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 group-hover:bg-white/30 transition-all duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
       </div>
     </section>
   );

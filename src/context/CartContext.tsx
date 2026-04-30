@@ -22,9 +22,9 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Load initial cart from localStorage if desired, or just start empty
+  // Load initial cart from sessionStorage
   useEffect(() => {
-    const savedCart = localStorage.getItem('chef_food_cart');
+    const savedCart = sessionStorage.getItem('chef_food_cart');
     if (savedCart) {
       try {
         setCart(JSON.parse(savedCart));
@@ -34,9 +34,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Save to localStorage on change
+  // Save to sessionStorage on change
   useEffect(() => {
-    localStorage.setItem('chef_food_cart', JSON.stringify(cart));
+    sessionStorage.setItem('chef_food_cart', JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (newItem: Omit<CartItem, 'quantity'>) => {

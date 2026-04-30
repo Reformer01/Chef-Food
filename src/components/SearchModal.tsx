@@ -3,21 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Search as SearchIcon, Heart, ShoppingCart, SlidersHorizontal } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
-
-const searchProducts = [
-  { id: 'prod-1', name: 'Classic Burger Combo Food', price: 66.00, description: 'Delicious classic burger combo with fries and drink.', image: 'https://images.unsplash.com/photo-1594212691516-b27ce2624b57?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-  { id: 'prod-2', name: 'Spicy Chicken Burger', price: 55.00, description: 'Hot and spicy chicken burger for the brave.', image: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-  { id: 'prod-3', name: 'Double Cheese Burger', price: 75.00, description: 'Double the cheese, double the fun.', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-  { id: 'prod-4', name: 'Vegan Plant Burger', price: 60.00, description: '100% plant-based burger that tastes like the real deal.', image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-  { id: 'prod-5', name: 'BBQ Bacon Burger', price: 72.00, description: 'Smoky BBQ sauce with crispy bacon.', image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-  { id: 'prod-6', name: 'Crispy Fish Burger', price: 58.00, description: 'Freshly caught fish, breaded and fried to perfection.', image: 'https://images.unsplash.com/photo-1619881589316-56c7f9e6b587?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-  { id: 'bs-101', name: 'Vegan Plant Burger', price: 60.00, description: '100% plant-based burger that tastes like the real deal.', image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-  { id: 'bs-102', name: 'Double Cheese Burger', price: 75.00, description: 'Double the cheese, double the fun.', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-  { id: 'bs-103', name: 'BBQ Bacon Burger', price: 72.00, description: 'Smoky BBQ sauce with crispy bacon.', image: 'https://images.unsplash.com/photo-1589302168068-964664d93cb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-  { id: 'menu-201', name: 'Chipotle Chicken', price: 36.00, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et', image: 'https://images.unsplash.com/photo-1588168333986-5078d3ae3976?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80' },
-  { id: 'menu-202', name: 'Spicy Club', price: 46.00, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et', image: 'https://images.unsplash.com/photo-1562967914-608f82629710?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80' },
-  { id: 'menu-203', name: 'Fruits Mix', price: 29.00, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80' },
-];
+import { useProducts } from '../context/ProductContext';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -32,9 +18,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { products, loading } = useProducts();
 
   const filteredProducts = useMemo(() => {
-    return searchProducts.filter(product => {
+    return products.filter(product => {
       const matchesQuery = 
         product.name.toLowerCase().includes(query.toLowerCase()) || 
         product.description.toLowerCase().includes(query.toLowerCase());
@@ -46,7 +33,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
       return matchesQuery && matchesPrice;
     });
-  }, [query, minPrice, maxPrice]);
+  }, [products, query, minPrice, maxPrice]);
 
   // Remove duplicates based on name for cleaner search results
   const uniqueFilteredProducts = useMemo(() => {
@@ -152,7 +139,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
             {/* Results */}
             <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
-              {uniqueFilteredProducts.length === 0 ? (
+              {loading ? (
+                <div className="flex justify-center items-center py-20">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+              ) : uniqueFilteredProducts.length === 0 ? (
                 <div className="text-center py-12">
                   <SearchIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-bold text-gray-900 mb-2">No results found</h3>

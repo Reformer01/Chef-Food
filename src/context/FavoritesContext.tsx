@@ -19,7 +19,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('chef_food_favorites');
+    const saved = sessionStorage.getItem('chef_food_favorites');
     if (saved) {
       try {
         setFavorites(JSON.parse(saved));
@@ -30,7 +30,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('chef_food_favorites', JSON.stringify(favorites));
+    sessionStorage.setItem('chef_food_favorites', JSON.stringify(favorites));
   }, [favorites]);
 
   const toggleFavorite = (item: FavoriteItem) => {

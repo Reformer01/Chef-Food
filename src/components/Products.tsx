@@ -2,51 +2,7 @@ import { Heart, Eye, ShoppingCart } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
-
-const products = [
-  {
-    id: 1,
-    name: 'Classic Burger Combo Food',
-    price: 66.00,
-    oldPrice: 85.00,
-    image: 'https://images.unsplash.com/photo-1594212691516-b27ce2624b57?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 2,
-    name: 'Spicy Chicken Burger',
-    price: 55.00,
-    oldPrice: 70.00,
-    image: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 3,
-    name: 'Double Cheese Burger',
-    price: 75.00,
-    oldPrice: 95.00,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 4,
-    name: 'Vegan Plant Burger',
-    price: 60.00,
-    oldPrice: 80.00,
-    image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 5,
-    name: 'BBQ Bacon Burger',
-    price: 72.00,
-    oldPrice: 90.00,
-    image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 6,
-    name: 'Crispy Fish Burger',
-    price: 58.00,
-    oldPrice: 75.00,
-    image: 'https://images.unsplash.com/photo-1619881589316-56c7f9e6b587?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
-  },
-];
+import { useProducts } from '../context/ProductContext';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -64,100 +20,126 @@ const itemVariants = {
 export default function Products() {
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { products, loading } = useProducts();
+
+  // Show only a few products here
+  const displayProducts = products.slice(0, 6);
 
   return (
-    <section id="food" className="py-20 bg-gray-50 overflow-hidden">
+    <section id="food" className="py-32 bg-neutral-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
+          className="text-center mb-24"
         >
-          <h3 className="font-script text-primary text-3xl mb-2">Products</h3>
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Latest Products</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magni commodi doloribus natus. Distinctio rerum repellendus incidunt magni molestias
+          <h3 className="inline-block rounded-full px-4 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-primary/10 text-primary mb-4">Our Selection</h3>
+          <h2 className="font-display text-5xl sm:text-6xl font-bold text-gray-900 mb-6 tracking-tight">Signature Offerings</h2>
+          <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed text-lg">
+            Discover our carefully curated selection of signature dishes, crafted with the freshest seasonal ingredients and culinary expertise.
           </p>
         </motion.div>
 
         {/* Grid */}
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {products.map((product, index) => {
-            const isFav = isFavorite(`prod-${product.id}`);
-            return (
-              <motion.div 
-                variants={itemVariants}
-                whileHover={{ y: -10 }}
-                key={product.id} 
-                className="bg-white rounded-2xl p-6 text-center group shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100"
-              >
-                {/* Image Container */}
-                <div className="relative mb-6 overflow-hidden rounded-xl aspect-[4/3] w-full bg-gray-100">
-                  <img 
-                    src={product.image} 
-                    alt={product.name} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2"
-                    referrerPolicy="no-referrer"
-                  />
-                  
-                  {/* Hover Actions */}
-                  <div className={`absolute right-3 top-3 flex flex-col gap-2 transition-all duration-300 ${index === 0 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0'}`}>
-                    <motion.button 
-                      onClick={() => toggleFavorite({ id: `prod-${product.id}`, name: product.name, price: product.price, image: product.image })}
-                      whileHover={{ scale: 1.1 }} 
-                      whileTap={{ scale: 0.9 }} 
-                      className={`bg-white/90 backdrop-blur p-2.5 rounded-full shadow-lg transition-colors ${isFav ? 'text-primary' : 'text-gray-700 hover:text-primary hover:bg-white'}`}
-                    >
-                      <Heart className={`w-4 h-4 ${isFav ? 'fill-primary' : ''}`} />
-                    </motion.button>
-                    <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="bg-white/90 backdrop-blur p-2.5 rounded-full shadow-lg text-gray-700 hover:text-primary hover:bg-white transition-colors">
-                      <Eye className="w-4 h-4" />
-                    </motion.button>
-                    <motion.button 
-                      onClick={() => addToCart({ id: `prod-${product.id}`, name: product.name, price: product.price, image: product.image })}
-                      whileHover={{ scale: 1.1 }} 
-                      whileTap={{ scale: 0.9 }} 
-                      className="bg-white/90 backdrop-blur p-2.5 rounded-full shadow-lg text-gray-700 hover:text-primary hover:bg-white transition-colors"
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                    </motion.button>
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        ) : (
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid grid-cols-1 md:grid-cols-12 gap-6"
+          >
+            {displayProducts.map((product, index) => {
+              const isFav = isFavorite(product.id);
+              
+              // Asymmetric Bento Grid Spans
+              const spans = [
+                "md:col-span-8", // 1st big
+                "md:col-span-4", // 2nd small
+                "md:col-span-4", // 3rd small
+                "md:col-span-8", // 4th big
+                "md:col-span-6", // 5th half
+                "md:col-span-6", // 6th half
+              ];
+              const spanClass = spans[index % spans.length];
+
+              return (
+                <motion.div 
+                  variants={itemVariants}
+                  key={product.id} 
+                  className={`group bg-black/5 ring-1 ring-black/5 p-2 sm:p-2.5 rounded-[2rem] flex ${spanClass}`}
+                >
+                  <div className={`relative w-full overflow-hidden rounded-[calc(2rem-0.5rem)] bg-white min-h-[400px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]`}>
+                    {/* Background Image Container */}
+                    <div className="absolute inset-0 bg-gray-100/50">
+                      <img 
+                        src={product.image} 
+                        alt={product.name} 
+                        className="w-full h-full object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
+                        referrerPolicy="no-referrer"
+                      />
+                      {/* Gradient Overlay for Text Readability */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                    </div>
+                    
+                    {/* Content Container positioned at the bottom */}
+                    <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end">
+                      
+                      {/* Content Header (Title & Price) */}
+                      <div className="flex justify-between items-end gap-4 mb-4">
+                        <div>
+                          <h4 className="font-display text-3xl sm:text-4xl font-bold text-white mb-2 tracking-tight leading-tight">
+                            {product.name}
+                          </h4>
+                          <div className="flex items-center text-primary">
+                            {[...Array(5)].map((_, i) => (
+                              <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span className="font-display font-bold text-white text-3xl">${product.price.toFixed(2)}</span>
+                          <span className="text-gray-300/60 line-through text-sm">${(product.price * 1.2).toFixed(2)}</span>
+                        </div>
+                      </div>
+
+                      {/* Actions Row */}
+                      <div className="flex gap-4 opacity-100 md:opacity-0 md:translate-y-8 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)] mt-2">
+                        <motion.button 
+                          onClick={() => toggleFavorite({ id: product.id, name: product.name, price: product.price, image: product.image })}
+                          whileHover={{ scale: 1.05 }} 
+                          whileTap={{ scale: 0.95 }} 
+                          className={`w-14 h-14 rounded-full backdrop-blur-md flex justify-center items-center shrink-0 transition-colors ${isFav ? 'bg-primary text-white border-2 border-primary' : 'bg-white/10 text-white border-2 border-white/20 hover:bg-white hover:text-black hover:border-white'}`}
+                        >
+                          <Heart className={`w-5 h-5 ${isFav ? 'fill-current' : ''}`} />
+                        </motion.button>
+                        <motion.button 
+                          onClick={() => addToCart({ id: product.id, name: product.name, price: product.price, image: product.image })}
+                          whileHover={{ scale: 1.02 }} 
+                          whileTap={{ scale: 0.98 }} 
+                          className="flex-1 py-4 px-6 bg-primary text-white rounded-full font-medium flex justify-center items-center gap-3 hover:bg-primary-hover transition-colors shadow-[0_10px_20px_-10px_rgba(139,94,52,0.5)]"
+                        >
+                          <ShoppingCart className="w-5 h-5" />
+                          <span>Add to Order</span>
+                        </motion.button>
+                      </div>
+
+                    </div>
                   </div>
-                </div>
-
-                {/* Stars */}
-                <div className="flex justify-center text-primary mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <motion.svg 
-                      key={i} 
-                      initial={{ opacity: 0, scale: 0 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.1 }}
-                      viewport={{ once: true }}
-                      className="w-4 h-4 fill-current" viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </motion.svg>
-                  ))}
-                </div>
-
-                {/* Title & Price */}
-                <h4 className="text-lg font-bold text-gray-900 mb-2">{product.name}</h4>
-                <div className="flex justify-center items-center gap-3">
-                  <span className="font-bold text-primary text-xl">${product.price.toFixed(2)}</span>
-                  <span className="text-gray-400 line-through text-sm">${product.oldPrice.toFixed(2)}</span>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
       </div>
     </section>
   );

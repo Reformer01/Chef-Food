@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, CreditCard, CheckCircle, ChevronLeft, Trash2, Plus, Minus, Loader2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -11,13 +14,16 @@ interface CheckoutModalProps {
 export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const [step, setStep] = useState<'CART' | 'PAYMENT' | 'SUCCESS'>('CART');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { user } = useAuth();
 
   // Reset state when modal is closed and reopened
   useEffect(() => {
     if (isOpen && step === 'SUCCESS') {
       setStep('CART');
+      setError(null);
     }
   }, [isOpen]);
 
@@ -25,26 +31,47 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const deliveryFee = subtotal > 0 ? 4.99 : 0;
   const total = subtotal + deliveryFee;
 
-  const handlePayment = (e: React.FormEvent) => {
+  const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setStep('SUCCESS');
-      
-      // Save order to localStorage
-      const newOrder = {
-        id: `ORD-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`,
-        date: new Date().toISOString(),
-        items: cart,
-        total: total,
-        status: 'Preparing'
-      };
-      const existingOrders = JSON.parse(localStorage.getItem('chef_food_orders') || '[]');
-      localStorage.setItem('chef_food_orders', JSON.stringify([newOrder, ...existingOrders]));
+    if (!user) {
+      setError("Please login to complete your checkout.");
+      return;
+    }
 
+    setIsProcessing(true);
+    setError(null);
+
+    try {
+      // Simulate payment processing delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Save order to Firestore
+      const orderData = {
+        userId: user.uid,
+        items: cart.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image
+        })),
+        subtotal,
+        deliveryFee,
+        total,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+
+      await addDoc(collection(db, 'orders'), orderData);
+
+      setStep('SUCCESS');
       clearCart(); // Clear cart on success
-    }, 2000);
+    } catch (err) {
+      console.error("Error saving order:", err);
+      setError("Failed to process order. Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleClose = () => {
@@ -54,6 +81,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       if (step === 'SUCCESS') {
         setStep('CART');
       }
+      setError(null);
     }, 300);
   };
 
@@ -135,7 +163,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                             <div className="flex-1 flex flex-col justify-between">
                               <div className="flex justify-between items-start">
                                 <h3 className="font-semibold text-gray-900 leading-tight">{item.name}</h3>
-                                <button onClick={() => removeItem(item.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                <button onClick={() => removeFromCart(item.id)} className="text-gray-400 hover:text-red-500 transition-colors">
                                   <Trash2 className="w-4 h-4" />
                                 </button>
                               </div>
@@ -180,6 +208,16 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                   >
+                    {!user && (
+                      <div className="mb-6 p-4 bg-orange-50 text-orange-700 rounded-xl border border-orange-200 text-sm">
+                        You must be logged in to complete your order. Please close this modal and login from the top menu.
+                      </div>
+                    )}
+                    {error && (
+                      <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-xl border border-red-200 text-sm">
+                        {error}
+                      </div>
+                    )}
                     <form id="payment-form" onSubmit={handlePayment} className="space-y-5">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Cardholder Name</label>
@@ -251,7 +289,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                   <button
                     form="payment-form"
                     type="submit"
-                    disabled={isProcessing}
+                    disabled={isProcessing || !user}
                     className="w-full bg-primary hover:bg-primary-hover disabled:bg-primary/70 text-white font-bold py-4 px-4 rounded-xl transition-colors shadow-lg shadow-primary/30 flex justify-center items-center gap-2"
                   >
                     {isProcessing ? (

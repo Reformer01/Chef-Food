@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, User, Heart, ShoppingBag, MapPin, Clock, Menu as MenuIcon, X } from 'lucide-react';
+import { Search, User, Heart, ShoppingBag, MapPin, Clock, Menu as MenuIcon, X, LogIn, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import DeliveryModal from './DeliveryModal';
 import CheckoutModal from './CheckoutModal';
@@ -8,6 +8,7 @@ import FavoritesModal from './FavoritesModal';
 import SearchModal from './SearchModal';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function Header() {
   const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
@@ -21,6 +22,7 @@ export default function Header() {
   
   const { totalItems } = useCart();
   const { favorites } = useFavorites();
+  const { user, signInWithGoogle, logout } = useAuth();
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -38,172 +40,147 @@ export default function Header() {
 
   return (
     <>
-      <motion.header 
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="sticky top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Left Section: Logo & Delivery */}
-            <div className="flex items-center gap-6">
-              {/* Logo */}
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+            className="fixed inset-0 z-40 bg-neutral-900/40 backdrop-blur-3xl flex flex-col justify-center items-center"
+          >
+            <nav className="flex flex-col items-center space-y-8">
+              {navItems.map((item, i) => (
+                <div key={item.name} className="overflow-hidden">
+                  <motion.a 
+                    href={item.href} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    initial={{ y: 50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: 20, opacity: 0 }}
+                    transition={{ delay: i * 0.1, duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+                    className="block text-4xl font-display font-medium text-neutral-50 hover:text-primary transition-colors"
+                  >
+                    {item.name}
+                  </motion.a>
+                </div>
+              ))}
+              
               <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="flex-shrink-0 flex items-center"
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ delay: navItems.length * 0.1, duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+                className="pt-8 flex gap-6 mt-8 border-t border-neutral-700/50"
               >
-                <a href="#" className="font-script text-4xl font-bold">
-                  Chef <span className="text-primary">Food</span>
-                </a>
+                <button onClick={() => { setIsMobileMenuOpen(false); setIsSearchOpen(true); }} className="p-3 bg-white/10 rounded-full text-neutral-50 hover:bg-primary transition-colors">
+                  <Search className="w-6 h-6" />
+                </button>
+                {user ? (
+                  <>
+                    <button onClick={() => { setIsMobileMenuOpen(false); setIsOrdersOpen(true); }} className="p-3 bg-white/10 rounded-full text-neutral-50 hover:bg-primary transition-colors">
+                      <User className="w-6 h-6" />
+                    </button>
+                    <button onClick={() => { setIsMobileMenuOpen(false); logout(); }} className="p-3 bg-white/10 rounded-full text-red-400 hover:bg-red-500 hover:text-white transition-colors">
+                      <LogOut className="w-6 h-6" />
+                    </button>
+                  </>
+                ) : (
+                  <button onClick={() => { setIsMobileMenuOpen(false); signInWithGoogle(); }} className="p-3 bg-primary rounded-full text-white hover:bg-primary-hover transition-colors">
+                    <LogIn className="w-6 h-6" />
+                  </button>
+                )}
+                <button onClick={() => { setIsMobileMenuOpen(false); setIsFavoritesOpen(true); }} className="p-3 bg-white/10 rounded-full text-neutral-50 hover:bg-primary transition-colors relative">
+                  <Heart className="w-6 h-6" />
+                  {favorites.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                      {favorites.length}
+                    </span>
+                  )}
+                </button>
               </motion.div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-              {/* Delivery Selector */}
-              <motion.div 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setIsDeliveryModalOpen(true)}
-                className="hidden lg:flex items-center bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 cursor-pointer transition-colors border border-gray-200"
-              >
-                <MapPin className="w-4 h-4 text-primary mr-2" />
-                <span className="text-sm font-medium text-gray-700 truncate max-w-[120px]">{deliveryAddress}</span>
-                <span className="mx-2 text-gray-400">•</span>
-                <Clock className="w-4 h-4 text-primary mr-2" />
-                <span className="text-sm font-medium text-gray-700">{deliveryTime}</span>
-              </motion.div>
-            </div>
+      <motion.header 
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
+        className="fixed top-6 left-4 right-4 sm:left-auto sm:right-auto sm:mx-auto sm:w-max z-50 flex justify-center pointer-events-none"
+      >
+        {/* Double-Bezel Outer Shell */}
+        <div className="pointer-events-auto bg-black/5 ring-1 ring-black/5 p-1.5 rounded-full backdrop-blur-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]">
+          {/* Inner Core */}
+          <div className="bg-white/90 rounded-[calc(9999px-0.375rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] px-4 sm:px-6 py-3 flex items-center gap-4 sm:gap-8">
+            
+            {/* Logo */}
+            <motion.a 
+              whileHover={{ scale: 1.05 }}
+              transition={{ ease: [0.32, 0.72, 0, 1] }}
+              href="#" 
+              className="font-display text-2xl tracking-tight font-bold flex items-center gap-1 text-neutral-900"
+            >
+              Grillino<span className="text-primary text-3xl">.</span>
+            </motion.a>
 
             {/* Navigation */}
-            <nav className="hidden xl:flex space-x-8">
-              {navItems.map((item, i) => (
-                <motion.a 
+            <nav className="hidden lg:flex items-center space-x-6 px-4 border-l border-r border-neutral-200/60">
+              {navItems.map((item) => (
+                <a 
                   key={item.name}
-                  whileHover={{ y: -2 }}
                   href={item.href} 
-                  className={`${i === 0 ? 'text-primary' : 'text-gray-700'} hover:text-primary font-medium transition-colors`}
+                  className="text-neutral-600 hover:text-primary font-medium text-sm transition-colors"
                 >
                   {item.name}
-                </motion.a>
+                </a>
               ))}
             </nav>
 
-            {/* Icons */}
-            <div className="flex items-center space-x-4">
-              <motion.button 
-                whileHover={{ scale: 1.1, rotate: 5 }} 
-                whileTap={{ scale: 0.9 }} 
-                onClick={() => setIsDeliveryModalOpen(true)}
-                className="lg:hidden text-gray-700 hover:text-primary transition-colors"
-              >
-                <MapPin className="w-5 h-5" />
-              </motion.button>
-              <motion.button 
+            {/* Actions */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button 
                 onClick={() => setIsSearchOpen(true)}
-                whileHover={{ scale: 1.1, rotate: 5 }} 
-                whileTap={{ scale: 0.9 }} 
-                className="hidden sm:block text-gray-700 hover:text-primary transition-colors"
+                className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full hover:bg-neutral-100 transition-colors text-neutral-600"
               >
-                <Search className="w-5 h-5" />
-              </motion.button>
-              <motion.button 
-                onClick={() => setIsOrdersOpen(true)}
-                whileHover={{ scale: 1.1, rotate: -5 }} 
-                whileTap={{ scale: 0.9 }} 
-                className="hidden sm:block text-gray-700 hover:text-primary transition-colors"
-              >
-                <User className="w-5 h-5" />
-              </motion.button>
-              <motion.button 
-                onClick={() => setIsFavoritesOpen(true)}
-                whileHover={{ scale: 1.1, rotate: 5 }} 
-                whileTap={{ scale: 0.9 }} 
-                className="hidden sm:block text-gray-700 hover:text-primary transition-colors relative"
-              >
-                <Heart className="w-5 h-5" />
-                <AnimatePresence>
-                  {favorites.length > 0 && (
-                    <motion.span 
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      transition={{ type: "spring" }}
-                      className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center"
-                    >
-                      {favorites.length}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-              <motion.button 
+                <Search className="w-4 h-4" />
+              </button>
+              
+              <button 
                 onClick={() => setIsCheckoutOpen(true)}
-                whileHover={{ scale: 1.1, rotate: -5 }} 
-                whileTap={{ scale: 0.9 }} 
-                className="text-gray-700 hover:text-primary transition-colors relative"
+                className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-neutral-100 transition-colors text-neutral-600"
               >
-                <ShoppingBag className="w-5 h-5" />
+                <ShoppingBag className="w-4 h-4" />
                 <AnimatePresence>
                   {totalItems > 0 && (
                     <motion.span 
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
-                      transition={{ type: "spring" }}
-                      className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center"
+                      className="absolute -top-0.5 -right-0.5 bg-primary text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center"
                     >
                       {totalItems}
                     </motion.span>
                   )}
                 </AnimatePresence>
-              </motion.button>
+              </button>
               
-              {/* Mobile Menu Toggle */}
-              <motion.button 
+              {/* Hamburger Button */}
+              <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                whileHover={{ scale: 1.1 }} 
-                whileTap={{ scale: 0.9 }} 
-                className="xl:hidden text-gray-700 hover:text-primary transition-colors ml-2"
+                className="lg:hidden relative flex items-center justify-center w-10 h-10 rounded-full bg-neutral-900 text-white z-50 overflow-hidden"
               >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
-              </motion.button>
+                <div className="w-4 h-4 relative flex flex-col justify-center items-center">
+                  <span className={`block absolute h-0.5 w-full bg-current transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${isMobileMenuOpen ? 'rotate-45' : '-translate-y-1.5'}`}></span>
+                  <span className={`block absolute h-0.5 bg-current transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${isMobileMenuOpen ? 'w-0 opacity-0' : 'w-full opacity-100'}`}></span>
+                  <span className={`block absolute h-0.5 w-full bg-current transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${isMobileMenuOpen ? '-rotate-45' : 'translate-y-1.5'}`}></span>
+                </div>
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Mobile Navigation Dropdown */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="xl:hidden bg-white border-t border-gray-100 overflow-hidden"
-            >
-              <nav className="flex flex-col px-4 py-4 space-y-4">
-                {navItems.map((item) => (
-                  <a 
-                    key={item.name}
-                    href={item.href} 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-gray-700 hover:text-primary font-medium transition-colors"
-                  >
-                    {item.name}
-                  </a>
-                ))}
-                <div className="pt-4 border-t border-gray-100 flex gap-4 flex-wrap">
-                  <button onClick={() => { setIsMobileMenuOpen(false); setIsSearchOpen(true); }} className="flex items-center gap-2 text-gray-700 hover:text-primary">
-                    <Search className="w-5 h-5" /> Search
-                  </button>
-                  <button onClick={() => { setIsMobileMenuOpen(false); setIsOrdersOpen(true); }} className="flex items-center gap-2 text-gray-700 hover:text-primary">
-                    <User className="w-5 h-5" /> Profile & Orders
-                  </button>
-                  <button onClick={() => { setIsMobileMenuOpen(false); setIsFavoritesOpen(true); }} className="flex items-center gap-2 text-gray-700 hover:text-primary">
-                    <Heart className="w-5 h-5" /> Favorites
-                  </button>
-                </div>
-              </nav>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </motion.header>
 
       <DeliveryModal 

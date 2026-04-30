@@ -4,13 +4,19 @@ import App from './App.tsx';
 import './index.css';
 import { CartProvider } from './context/CartContext';
 import { FavoritesProvider } from './context/FavoritesContext';
+import { AuthProvider } from './context/AuthContext';
+import { ProductProvider } from './context/ProductContext';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <FavoritesProvider>
-      <CartProvider>
-        <App />
-      </CartProvider>
-    </FavoritesProvider>
+    <AuthProvider>
+      <ProductProvider>
+        <FavoritesProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </FavoritesProvider>
+      </ProductProvider>
+    </AuthProvider>
   </StrictMode>,
 );

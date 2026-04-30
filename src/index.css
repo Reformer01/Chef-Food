@@ -1,17 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
-  --font-script: "Dancing Script", cursive;
-  --color-primary: #f89223;
-  --color-primary-hover: #e07a10;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  
+  --color-primary: #8b5e34;      /* Deep muted terracotta / rust / espresso mix */
+  --color-primary-hover: #6d4726;
+  
+  /* Editorial Neutral scale (warm creams and espresso tones) */
+  --color-neutral-950: #0a0908;
+  --color-neutral-900: #1a1714;  /* Deep espresso */
+  --color-neutral-800: #2d2824;
+  --color-neutral-700: #423b36;
+  --color-neutral-600: #59514b;
+  --color-neutral-500: #7c736c;
+  --color-neutral-400: #a39b94;
+  --color-neutral-300: #c9c3bd;
+  --color-neutral-200: #e6e2de;
+  --color-neutral-100: #f4f0ea;
+  --color-neutral-50: #fdfbf7;   /* Warm cream */
+
+  --color-gray-950: var(--color-neutral-950);
+  --color-gray-900: var(--color-neutral-900);
+  --color-gray-800: var(--color-neutral-800);
+  --color-gray-700: var(--color-neutral-700);
+  --color-gray-600: var(--color-neutral-600);
+  --color-gray-500: var(--color-neutral-500);
+  --color-gray-400: var(--color-neutral-400);
+  --color-gray-300: var(--color-neutral-300);
+  --color-gray-200: var(--color-neutral-200);
+  --color-gray-100: var(--color-neutral-100);
+  --color-gray-50: var(--color-neutral-50);
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   font-family: var(--font-sans);
-  color: #333;
+  color: var(--color-neutral-900);
+  background-color: var(--color-neutral-50);
+}
+
+/* CSS Noise/Film Grain Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opactiy='0.05'/%3E%3C/svg%3E");
+  opacity: 0.03;
+}
+
+/* Custom utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }

@@ -36,10 +36,10 @@ export default function Gallery() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h3 className="font-script text-primary text-3xl mb-2">Photos</h3>
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Food Gallery</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magni commodi doloribus natus. Distinctio rerum repellendus incidunt magni molestias
+          <h3 className="uppercase tracking-widest text-sm font-semibold text-primary mb-3">Moments</h3>
+          <h2 className="font-display text-4xl sm:text-5xl font-bold text-gray-900 mb-6 tracking-tight">Our Food Gallery</h2>
+          <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed">
+            Take a visual journey through our kitchen. From raw, fresh ingredients to the final beautifully plated dishes.
           </p>
         </motion.div>
 

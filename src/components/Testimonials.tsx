@@ -51,8 +51,8 @@ export default function Testimonials() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <p className="font-script text-primary text-3xl mb-2">Testimonials</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
+          <p className="uppercase tracking-widest text-sm font-semibold text-primary mb-3">Community Voice</p>
+          <h2 className="font-display text-4xl sm:text-5xl font-bold text-gray-900 mb-6 tracking-tight">What Our Guests Say</h2>
           <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
         </motion.div>
 

@@ -2,10 +2,10 @@ import { motion } from 'motion/react';
 
 export default function Footer() {
   return (
-    <footer id="contact" className="relative bg-[#111] text-gray-300 pt-32 pb-12 overflow-hidden">
+    <footer id="contact" className="relative bg-neutral-950 text-gray-300 pt-32 pb-12 overflow-hidden">
       {/* Torn Paper Effect Top */}
       <div className="absolute top-0 left-0 right-0 z-20 -translate-y-[99%]">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" className="w-full h-auto text-[#111] fill-current">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" className="w-full h-auto text-neutral-950 fill-current">
           <path d="M0,100 C150,50 300,100 450,50 C600,100 750,50 900,100 C1050,50 1200,100 1440,50 L1440,100 L0,100 Z"></path>
         </svg>
       </div>
@@ -50,8 +50,8 @@ export default function Footer() {
           {/* Newsletter */}
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
             <div className="mb-6">
-              <a href="#" className="font-script text-4xl text-white font-bold inline-block hover:scale-105 transition-transform">
-                Chef <span className="text-primary">Food</span>
+              <a href="#" className="font-display text-3xl text-white font-extrabold inline-block tracking-tight hover:opacity-80 transition-opacity">
+                Grillino<span className="text-primary text-4xl leading-none">.</span>
               </a>
             </div>
             <h4 className="text-white font-bold mb-4 uppercase tracking-wider">Join Our Newsletter</h4>
@@ -86,7 +86,7 @@ export default function Footer() {
           transition={{ delay: 0.6 }}
           className="border-t border-gray-800 pt-8 text-center text-sm"
         >
-          <p>Copyright © 2026 Chef Food . All Rights Reserved.</p>
+          <p>Copyright © 2026 Grillino. All Rights Reserved.</p>
         </motion.div>
       </div>
     </footer>
