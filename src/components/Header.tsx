@@ -8,6 +8,7 @@ import FavoritesModal from './FavoritesModal';
 import SearchModal from './SearchModal';
 import UserProfile from './UserProfile';
 import ContactModal from './ContactModal';
+import AuthModal from './AuthModal';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
@@ -20,13 +21,25 @@ export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState('Select Address');
   const [deliveryTime, setDeliveryTime] = useState('ASAP');
   
   const { totalItems } = useCart();
   const { favorites } = useFavorites();
-  const { user, signInWithGoogle, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
+
+  const openLogin = () => {
+    setAuthMode('login');
+    setIsAuthOpen(true);
+  };
+
+  const openRegister = () => {
+    setAuthMode('register');
+    setIsAuthOpen(true);
+  };
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -84,7 +97,7 @@ export default function Header() {
                 <button onClick={() => { setIsMobileMenuOpen(false); setIsSearchOpen(true); }} className="p-3 bg-white/10 rounded-full text-neutral-50 hover:bg-primary transition-colors">
                   <Search className="w-6 h-6" />
                 </button>
-                {user ? (
+                {isAuthenticated ? (
                   <>
                     <button onClick={() => { setIsMobileMenuOpen(false); setIsProfileOpen(true); }} className="p-3 bg-white/10 rounded-full text-neutral-50 hover:bg-primary transition-colors">
                       <User className="w-6 h-6" />
@@ -94,7 +107,7 @@ export default function Header() {
                     </button>
                   </>
                 ) : (
-                  <button onClick={() => { setIsMobileMenuOpen(false); signInWithGoogle(); }} className="p-3 bg-primary rounded-full text-white hover:bg-primary-hover transition-colors">
+                  <button onClick={() => { setIsMobileMenuOpen(false); openLogin(); }} className="p-3 bg-primary rounded-full text-white hover:bg-primary-hover transition-colors">
                     <LogIn className="w-6 h-6" />
                   </button>
                 )}
@@ -155,12 +168,19 @@ export default function Header() {
                 <Search className="w-4 h-4" />
               </button>
 
-              {user && (
+              {isAuthenticated ? (
                 <button 
                   onClick={() => setIsProfileOpen(true)}
                   className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full hover:bg-neutral-100 transition-colors text-neutral-600"
                 >
                   <User className="w-4 h-4" />
+                </button>
+              ) : (
+                <button 
+                  onClick={openLogin}
+                  className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full hover:bg-neutral-100 transition-colors text-neutral-600"
+                >
+                  <LogIn className="w-4 h-4" />
                 </button>
               )}
               
@@ -235,6 +255,12 @@ export default function Header() {
       <ContactModal
         isOpen={isContactOpen}
         onClose={() => setIsContactOpen(false)}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        defaultMode={authMode}
       />
     </>
   );
