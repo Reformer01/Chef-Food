@@ -9,6 +9,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   </head>
   <body>
+    <script>
+      // Workaround for "Cannot set property fetch of #<Window> which has only a getter"
+      // If the environment defines fetch as a getter on Window prototype, we intercept attempts to set it.
+      (function() {
+        try {
+          let getFetchDescriptor = function(obj) {
+            if (!obj) return null;
+            let desc = Object.getOwnPropertyDescriptor(obj, 'fetch');
+            if (desc) return desc;
+            return getFetchDescriptor(Object.getPrototypeOf(obj));
+          };
+          let desc = getFetchDescriptor(window);
+          if (desc && desc.get && !desc.set) {
+            Object.defineProperty(window, 'fetch', {
+              get: desc.get,
+              set: function(val) {
+                console.warn("Ignoring attempt to override window.fetch");
+              },
+              configurable: true,
+              enumerable: true
+            });
+          }
+        } catch (e) {
+          console.error("Failed to apply fetch workaround:", e);
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
