@@ -756,6 +756,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = 'login', onAu
                     </MagneticButton>
                   </motion.div>
                 )}
+              </div>
 
               {/* Terms - Premium Typography */}
               <motion.p 
